@@ -1,0 +1,36 @@
+﻿<UserControl x:Class="PathfindingAlgorithms.GridEditor"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:local="clr-namespace:PathfindingAlgorithms"
+             mc:Ignorable="d"
+             d:DesignHeight="600" d:DesignWidth="700">
+    <Grid>
+
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="Auto" />
+            <ColumnDefinition />
+        </Grid.ColumnDefinitions>
+
+        <local:GridField x:Name="Field" VerticalAlignment="Center" />
+
+        <Grid Grid.Column="1">
+            <StackPanel>
+                <ComboBox Name="DrawModeBox" SelectedIndex="1" 
+                          ItemsSource="{Binding DrawingModesCaptions}"
+                          DisplayMemberPath="Key"
+                          SelectedValuePath="Value"
+                          SelectionChanged="DrawModeBox_OnSelectionChanged"/>
+                
+                <WrapPanel>
+                    <TextBlock Text="Step delay "/>
+                    <TextBox Name="StepDelayBox" Text="10"/>
+                    <TextBlock Text="ms"/>
+                </WrapPanel>
+                
+            </StackPanel>
+        </Grid>
+
+    </Grid>
+</UserControl>
