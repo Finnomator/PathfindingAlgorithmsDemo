@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
@@ -12,7 +13,12 @@ namespace PathfindingAlgorithms {
         public UiNode? EndNode { get; private set; }
         public NodeState DrawMode { get; set; }
 
-        public GridField() : this(50, 50, 10) {
+        public static Dictionary<NodeState, NodeState> ClearPathAndVisited { get; } = new() {
+            { NodeState.Path, NodeState.Normal},
+            { NodeState.Visited, NodeState.Normal}
+        };
+
+        public GridField() : this(50, 50, 7) {
         }
 
         public GridField(int width, int height, double nodeSize) {
@@ -79,6 +85,9 @@ namespace PathfindingAlgorithms {
         }
 
         public List<UiNode> GetNeighbors(UiNode uiNode) => GetNeighbors(uiNode.X, uiNode.Y);
+
+        public UiNode[] GetNeighbors(UiNode uiNode, bool invertedState = false, params NodeState[] states) =>
+            GetNeighbors(uiNode).Where(node => invertedState ? !states.Contains(node.State) : states.Contains(node.State)).ToArray();
 
         public List<UiNode> GetNeighbors(int x, int y) {
             List<UiNode> neighbors = new(4);

@@ -6,15 +6,13 @@
              xmlns:local="clr-namespace:PathfindingAlgorithms"
              mc:Ignorable="d"
              d:DesignHeight="600" d:DesignWidth="700">
-    <Grid>
+    <Grid Name="Root">
 
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="Auto" />
             <ColumnDefinition />
         </Grid.ColumnDefinitions>
-
-        <local:GridField x:Name="Field" VerticalAlignment="Center" />
-
+        
         <Grid Grid.Column="1">
             <StackPanel>
                 <ComboBox Name="DrawModeBox" SelectedIndex="1" 
@@ -25,10 +23,12 @@
                 
                 <WrapPanel>
                     <TextBlock Text="Step delay "/>
-                    <TextBox Name="StepDelayBox" Text="10"/>
+                    <TextBox Name="StepDelayBox" Text="1"/>
                     <TextBlock Text="ms"/>
                 </WrapPanel>
                 
+                <Button Content="Solve" Click="Solve_Click"/>
+                <Label Name="SolvingTimeLabel" Content="Time: NA"/>
             </StackPanel>
         </Grid>
 
