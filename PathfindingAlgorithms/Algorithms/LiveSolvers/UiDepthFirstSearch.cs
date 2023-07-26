@@ -1,54 +1,54 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Threading.Tasks;
 
 namespace PathfindingAlgorithms.Algorithms.LiveSolvers {
-    public static class UiDepthFirstSearch {
+    public class UiDepthFirstSearch: UiAlgorithm  {
 
-        static private int _stepDelayMs;
-        static private readonly Dictionary<UiNode, UiNode> Predecessor = new();
+        static private readonly Dictionary<(int, int), (int, int)> Predecessor = new();
         static private bool _foundEnd;
         
-        public static async Task<bool> Solve(GridField field, int stepDelayMs) {
-            _stepDelayMs = stepDelayMs;
+        public override async Task<bool> Solve() {
             _foundEnd = false;
             Predecessor.Clear();
             
-            await Solve(field, field.StartNode!);
+            await Solve(Field.StartNode!);
             
-            if (!Predecessor.ContainsKey(field.EndNode!))
+            if (!Predecessor.ContainsKey(Field.EndNode!.Position))
                 return false;
             
-            UiNode current = Predecessor[field.EndNode!];
+            (int x, int y) current = Predecessor[Field.EndNode!.Position];
 
-            while (current.Position != field.StartNode!.Position) {
-                current.SetState(NodeState.Path);
+            while (current != Field.StartNode!.Position) {
+                Field.Nodes[current.y][current.x].SetState(NodeState.Path);
                 current = Predecessor[current];
-                await Task.Delay(stepDelayMs);
+                await Task.Delay(StepDelayMs);
             }
 
             return true;
         }
 
-        static private async Task Solve(GridField field, UiNode startNode) {
+        private async Task Solve(UiNode startNode) {
 
-            if (startNode.Position == field.EndNode!.Position) {
-                Predecessor[startNode] = field.EndNode;
+            if (startNode.Position == Field.EndNode!.Position) {
+                Predecessor[startNode.Position] = Field.EndNode.Position;
                 _foundEnd = true;
                 return;
             }
             
-            if (startNode != field.StartNode) {
+            if (startNode != Field.StartNode) {
                 startNode.SetState(NodeState.SearchHead);
-                await Task.Delay(_stepDelayMs);
+                await Task.Delay(StepDelayMs);
                 startNode.SetState(NodeState.Visited);
             }
 
-            foreach (UiNode node in field.GetNeighbors(startNode, false, NodeState.Destination, NodeState.Normal)) {
+            foreach (UiNode node in Field.GetNeighbors(startNode, false, NodeState.Destination, NodeState.Normal)) {
                 if (!_foundEnd)
-                    await Solve(field, node);
-                Predecessor[node] = startNode;
+                    await Solve(node);
+                Predecessor[node.Position] = startNode.Position;
             }
+        }
+
+        public UiDepthFirstSearch(GridField field, int stepDelayMs) : base(field, stepDelayMs) {
         }
     }
 }

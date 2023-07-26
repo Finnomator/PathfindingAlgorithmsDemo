@@ -21,7 +21,13 @@
                           SelectedValuePath="Value"
                           SelectionChanged="DrawModeBox_OnSelectionChanged"/>
                 
-                <WrapPanel>
+                <ComboBox Name="AlgorithmBox" SelectedIndex="0">
+                    <ComboBoxItem>A*</ComboBoxItem>
+                    <ComboBoxItem>Breath First Search</ComboBoxItem>
+                    <ComboBoxItem>Depth First Search</ComboBoxItem>
+                </ComboBox>
+
+                    <WrapPanel>
                     <TextBlock Text="Step delay "/>
                     <TextBox Name="StepDelayBox" Text="1"/>
                     <TextBlock Text="ms"/>

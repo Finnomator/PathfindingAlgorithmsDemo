@@ -1,15 +1,15 @@
 ﻿using System.Threading.Tasks;
 
 namespace PathfindingAlgorithms.Algorithms.LiveSolvers {
-    public static class UiNearestNeighbor {
+    public class UiNearestNeighbor: UiAlgorithm  {
         
-        public static async Task Solve(GridField field, int stepDelayMs) {
+        public override async Task Solve() {
 
-            UiNode current = field.StartNode!;
+            UiNode current = Field.StartNode!;
 
             while (true) {
 
-                UiNode[] neighbors = field.GetNeighbors(current, true, NodeState.Wall, NodeState.Start, NodeState.Path);
+                UiNode[] neighbors = Field.GetNeighbors(current, true, NodeState.Wall, NodeState.Start, NodeState.Path);
 
                 if (neighbors.Length == 0)
                     break;
@@ -18,7 +18,7 @@ namespace PathfindingAlgorithms.Algorithms.LiveSolvers {
 
                 foreach (UiNode neighbor in neighbors) {
                     
-                    double dist = neighbor.SquaredEuclideanDistance(field.EndNode!);
+                    double dist = neighbor.SquaredEuclideanDistance(Field.EndNode!);
                     
                     if (dist >= min)
                         continue;
@@ -27,13 +27,16 @@ namespace PathfindingAlgorithms.Algorithms.LiveSolvers {
                     min = dist;
                 }
                 
-                if (current.Position == field.EndNode!.Position)
+                if (current.Position == Field.EndNode!.Position)
                     break;
                 
                 current.SetState(NodeState.Path);
 
-                await Task.Delay(stepDelayMs);
+                await Task.Delay(StepDelayMs);
             }
+        }
+
+        public UiNearestNeighbor(GridField field, int stepDelayMs) : base(field, stepDelayMs) {
         }
     }
 }

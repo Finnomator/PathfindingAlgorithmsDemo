@@ -13,11 +13,6 @@ namespace PathfindingAlgorithms {
         public UiNode? EndNode { get; private set; }
         public NodeState DrawMode { get; set; }
 
-        public static Dictionary<NodeState, NodeState> ClearPathAndVisited { get; } = new() {
-            { NodeState.Path, NodeState.Normal},
-            { NodeState.Visited, NodeState.Normal}
-        };
-
         public GridField() : this(50, 50, 7) {
         }
 

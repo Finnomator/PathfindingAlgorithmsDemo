@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.ComponentModel;
 using System.Diagnostics;
 using System.Windows;
 using System.Windows.Controls;
@@ -13,28 +14,34 @@ namespace PathfindingAlgorithms {
             { "Destination", NodeState.Destination },
             { "Start", NodeState.Start }
         };
-
+        
         public int StepDelayMs => int.Parse(StepDelayBox.Text);
 
         private GridField? _field;
 
         public GridEditor() {
             InitializeComponent();
-            NewField();
+            NewField(50, 50, 10);
             DataContext = this;
         }
 
-        private void NewField() {
+        private void NewField(int width, int height, int nodeSize) {
             if (_field != null)
                 Root.Children.Remove(_field);
             
-            GridField newField = new(20, 20, 10) {
+            GridField newField = new(width, height, nodeSize) {
                 VerticalAlignment = VerticalAlignment.Center,
             };
 
             if (_field != null && newField.Rows == _field.Rows && newField.Columns == _field.Columns) {
                 foreach (UiNode[] row in _field.Nodes) {
                     foreach (UiNode node in row) {
+                        
+                        if (node.State == NodeState.Start)
+                            newField.SetStartPoint(node);
+                        else if (node.State == NodeState.Destination)
+                            newField.SetEndPoint(node);
+                        
                         if (DrawingModesCaptions.ContainsValue(node.State))
                             newField.Nodes[node.Y][node.X].SetState(node.State);
                     }
@@ -51,11 +58,22 @@ namespace PathfindingAlgorithms {
         }
 
         private async void Solve_Click(object sender, RoutedEventArgs e) {
-            NewField();
+            NewField(50, 50, 10);
+
+            UiAlgorithm algorithm = AlgorithmBox.SelectedIndex switch {
+                0 => new UiAStar(_field!, StepDelayMs),
+                1 => new UiBreathFirstSearch(_field!, StepDelayMs),
+                2 => new UiDepthFirstSearch(_field!, StepDelayMs),
+                _ => throw new InvalidEnumArgumentException()
+            };
+
             Stopwatch sw = Stopwatch.StartNew();
-            await UiDepthFirstSearch.Solve(_field!, StepDelayMs);
+            await algorithm.Solve();
             sw.Stop();
+            
             SolvingTimeLabel.Content = $"Time: {sw.ElapsedMilliseconds}ms";
         }
+
+        
     }
 }
